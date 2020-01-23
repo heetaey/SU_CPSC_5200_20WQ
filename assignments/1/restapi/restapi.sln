@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "restapi", "restapi.csproj", "{2E20C517-FCBB-4F71-BB44-66372A4635FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E20C517-FCBB-4F71-BB44-66372A4635FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E20C517-FCBB-4F71-BB44-66372A4635FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E20C517-FCBB-4F71-BB44-66372A4635FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E20C517-FCBB-4F71-BB44-66372A4635FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
