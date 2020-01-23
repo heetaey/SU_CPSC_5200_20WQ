@@ -90,6 +90,18 @@ namespace restapi.Models
                         Reference = $"/timesheets/{UniqueIdentifier}/lines"
                     });
 
+                    /*
+                     * ActionLink for Delete.
+                     */
+                    links.Add(new ActionLink()
+                    {
+                        Method = Method.Delete,
+                        Type = ContentTypes.Deletion,
+                        Relationship = ActionRelationship.Delete,
+                        Reference = $"/timesheets/{UniqueIdentifier}/deleted"
+                    });
+
+
                     break;
 
                 case TimecardStatus.Submitted:
@@ -175,6 +187,13 @@ namespace restapi.Models
             Lines.Add(annotatedLine);
 
             return annotatedLine;
+        }
+
+        public bool deleteLine(Guid lineId)
+        {
+            var linesToRemove = Lines.SingleOrDefault(l => l.UniqueIdentifier == lineId);
+
+            return Lines.Remove(linesToRemove);
         }
 
         public bool CanBeDeleted()

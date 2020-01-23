@@ -160,6 +160,54 @@ namespace restapi.Controllers
             }
         }
 
+        /*
+         *  Replaces a complete line item by taking the timecardId and its
+         *  lineId. Throws state error if either of ID is not found.
+         *  It will delete the current recorded lineID and replace it into
+         *  the lines with the new ID.
+         */
+        [HttpPost("{timecardId:guid}/lines/{lineId:guid}/replace")]
+        [Produces(ContentTypes.TimesheetLine)]
+        [ProducesResponseType(typeof(TimecardLine), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(InvalidStateError), 409)]
+        [ProducesResponseType(typeof(LineNotFoundError), 409)]
+        public IActionResult ReplaceLine(Guid timecardId, Guid lineId,
+                                        [FromBody] DocumentLine documentLine)
+        {
+            logger.LogInformation($"Looking for timesheet {timecardId}");
+
+            Timecard timecard = repository.Find(timecardId);
+
+            if (timecard != null)
+            {
+                if (timecard.Status != TimecardStatus.Draft)
+                {
+                    return StatusCode(409, new InvalidStateError() { });
+                }
+
+                logger.LogInformation($"Looking for the line {lineId}");
+
+                var getLineId = timecard.HasLine(lineId);
+
+                if (!getLineId)
+                {
+                    return StatusCode(409, new LineNotFoundError() { });
+                }
+
+                timecard.deleteLine(lineId);
+
+                repository.Update(timecard);
+
+                return AddLine(timecardId, documentLine);
+            }
+
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpGet("{id:guid}/transitions")]
         [Produces(ContentTypes.Transitions)]
         [ProducesResponseType(typeof(IEnumerable<Transition>), 200)]
