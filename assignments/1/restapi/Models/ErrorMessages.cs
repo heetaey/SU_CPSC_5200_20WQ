@@ -27,4 +27,12 @@ namespace restapi.Models
 
         public string Message { get => "Unable to locate the lineId with the timecard"; }
     }
+
+    public class ApproverError
+    {
+        public int ErrorCode { get => 103; }
+
+        public string Message { get => "Cannot self-approve the timecard"; }
+    }
+
 }
