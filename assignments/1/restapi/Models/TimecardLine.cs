@@ -25,12 +25,31 @@ namespace restapi.Models
             UniqueIdentifier = Guid.NewGuid();
         }
 
+        /*
+         * Conditional states were added in order to make the input valid.
+         * For instance, week value cannot be 0 or negative. Year range was
+         * set within a certain value.
+         * 
+         */
         public TimecardLine Update(DocumentLine line)
         {
-            Week = line.Week;
-            Year = line.Year;
+            if (Week > 0 && Week < 53)
+            {
+                Week = line.Week;
+            }
+
+            if (Year > 1999 && Year < 3000)
+            {
+                Year = line.Year;
+            }
+
             Day = line.Day;
-            Hours = line.Hours;
+
+            if (Hours > 0 && Hours < 24)
+            {
+                Hours = line.Hours;
+            }
+
             Project = line.Project;
 
             Updated = DateTime.UtcNow;
@@ -39,6 +58,7 @@ namespace restapi.Models
 
             return this;
         }
+
 
         // public TimecardLine Update(JObject line)
         // {
