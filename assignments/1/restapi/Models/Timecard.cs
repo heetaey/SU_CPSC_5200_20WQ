@@ -196,6 +196,13 @@ namespace restapi.Models
             return Lines.Remove(linesToRemove);
         }
 
+        public TimecardLine updateLine(Guid lineId, DocumentLine updateLine)
+        {
+            var linesToUpdate = Lines.SingleOrDefault(l => l.UniqueIdentifier == lineId);
+
+            return linesToUpdate.Update(updateLine);
+        }
+
         public bool CanBeDeleted()
         {
             return (Status == TimecardStatus.Cancelled || Status == TimecardStatus.Draft);

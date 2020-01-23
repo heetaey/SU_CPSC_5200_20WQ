@@ -208,6 +208,52 @@ namespace restapi.Controllers
             }
         }
 
+        /*
+         *  Updates a complete line item.
+         *  
+         */
+        [HttpPatch("{timecardId:guid}/lines/{lineId:guid}/update")]
+        [Produces(ContentTypes.TimesheetLine)]
+        [ProducesResponseType(typeof(TimecardLine), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(InvalidStateError), 409)]
+        [ProducesResponseType(typeof(LineNotFoundError), 409)]
+        public IActionResult UpdateLine(Guid timecardId, Guid lineId,
+                                        [FromBody] DocumentLine documentLine)
+        {
+            logger.LogInformation($"Looking for timesheet {timecardId}");
+
+            Timecard timecard = repository.Find(timecardId);
+
+            if (timecard != null)
+            {
+                if (timecard.Status != TimecardStatus.Draft)
+                {
+                    return StatusCode(409, new InvalidStateError() { });
+                }
+
+                logger.LogInformation($"Looking for the line {lineId}");
+
+                var getLineId = timecard.HasLine(lineId);
+
+                if (!getLineId)
+                {
+                    return StatusCode(409, new LineNotFoundError() { });
+                }
+
+                var updatedLine = timecard.updateLine(lineId, documentLine);
+
+                repository.Update(timecard);
+
+                return Ok(updatedLine);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
         [HttpGet("{id:guid}/transitions")]
         [Produces(ContentTypes.Transitions)]
         [ProducesResponseType(typeof(IEnumerable<Transition>), 200)]
